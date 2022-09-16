@@ -1,0 +1,2 @@
+- name: Install haproxy if necessary
+  include_tasks: haproxy.yml

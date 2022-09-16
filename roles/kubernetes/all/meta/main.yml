@@ -1,0 +1,5 @@
+dependencies:
+  - {role: commons/update}
+  - {role: commons/containerd}
+  # This task is for users in iran only :)
+  - {role: commons/proxy }

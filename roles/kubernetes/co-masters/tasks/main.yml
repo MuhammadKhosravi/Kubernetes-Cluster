@@ -1,0 +1,17 @@
+---
+- name: Check if kubeadm has already run
+  stat:
+    path: "/etc/kubernetes/admin.conf"
+  register: kubeadm_ca
+
+- name: Join cluster if not already did
+  include_tasks: join.yml
+  when: not kubeadm_ca.stat.exists
+
+- name: Enable and check kubelet service
+  when: not kubeadm_ca.stat.exists
+  systemd:
+    name: kubelet
+    daemon_reload: yes
+    state: started
+    enabled: yes

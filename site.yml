@@ -1,0 +1,30 @@
+- hosts: kube-cluster
+  gather_facts: false
+  become: true
+  roles:
+    - {role: kubernetes/all, pkgs: ["kubelet", "kubeadm"]}
+
+- hosts: lb
+  gather_facts: false
+  become: true
+  roles:
+    - {role: loadbalancer}
+    
+- hosts: master1
+  gather_facts: false
+  become: true
+  roles:
+    - {role: kubernetes/master}
+    - {role: cni}
+
+- hosts: co-masters
+  gather_facts: false
+  become: true
+  roles:
+    - {role: kubernetes/co-masters}
+
+- hosts: workers
+  gather_facts: false
+  become: true
+  roles:
+    - {role: kubernetes/node, tags: worker}

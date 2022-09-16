@@ -1,0 +1,2 @@
+- name: Install updates on OS
+  include_tasks: pkg.yml

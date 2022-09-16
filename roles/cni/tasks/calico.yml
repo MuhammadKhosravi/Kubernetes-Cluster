@@ -1,0 +1,36 @@
+- name: Check Calico daemonset is working
+  shell: kubectl --kubeconfig={{ kubeadmin_config }} get ds --all-namespaces | grep calico
+  run_once: true
+  register: check_net
+  ignore_errors: true
+  changed_when: false
+
+- name: Copy tigera operator manifest to node
+  when: check_net is failed
+  become_user: ubuntu
+  ansible.builtin.template:
+    src: tigera-operator.yaml
+    dest: /tmp/tigera-operator.yaml
+  
+
+- name: Install tigera operator 
+  when: check_net is failed
+  become_user: ubuntu
+  shell: |
+    kubectl create -f /tmp/tigera-operator.yaml
+  run_once: true
+
+- name: Copy Calico manifest to node
+  when: check_net is failed
+  become_user: ubuntu
+  ansible.builtin.template:
+    src: custom-resources.yaml
+    dest: /tmp/custom-resources.yaml
+  
+
+- name: Install Calico
+  when: check_net is failed
+  become_user: ubuntu
+  shell: |
+    kubectl create -f /tmp/custom-resources.yaml
+  run_once: true

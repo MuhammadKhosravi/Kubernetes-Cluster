@@ -1,0 +1,17 @@
+# Ansible
+ansible_user: ubuntu
+
+# Kubernetes
+token: b0f7b8.8d1767876297d85c
+connect_port: 6443
+kube_version: v1.25.0
+control_plane_endpoint: 192.168.10.124
+master1: 192.168.10.48
+
+pod_network_cidr: "10.244.0.0/16"
+
+# Network implementation('flannel', 'calico', 'canal')
+network: calico
+
+kubeadmin_config: /etc/kubernetes/admin.conf
+service_cidr: "10.96.0.0/12"

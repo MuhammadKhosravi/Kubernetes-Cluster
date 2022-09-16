@@ -1,0 +1,11 @@
+---
+- name: Deploy resolv.conf template
+  template:
+    src: roles/commons/proxy/defaults/resolve.conf
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify:
+    - reload NetworkManager

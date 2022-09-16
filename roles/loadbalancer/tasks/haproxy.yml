@@ -1,0 +1,29 @@
+- name: Check if haproxy exists
+  shell: |
+    haproxy --version
+  ignore_errors: true  
+  register: ha_exists
+
+- name: Install haproxy package
+  when: ha_exists is failed
+  apt:
+    name: "haproxy"
+    update_cache: true
+    state: present
+
+- name: Configure haproxy
+  when: ha_exists is failed
+  ansible.builtin.template:
+    src: haproxy.cfg
+    dest: /etc/haproxy/
+
+
+- name: Enable and check haproxy service
+  when: ha_exists is failed
+  systemd:
+    name: haproxy
+    daemon_reload: true
+    state: started
+    enabled: true
+  register: started_haproxy
+  ignore_errors: true

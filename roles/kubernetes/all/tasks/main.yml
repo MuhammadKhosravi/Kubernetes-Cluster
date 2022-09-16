@@ -1,0 +1,33 @@
+- name: Check if kubeadm has already run
+  stat:
+    path: "/etc/kubernetes/pki/ca.key"
+  register: kubeadm_ca
+
+- name: debug thing
+  debug:
+    msg: "{{ kubeadm_ca }}"
+
+- name: Add Kubernetes APT GPG key
+  when: not kubeadm_ca.stat.exists
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Add Kubernetes APT repository
+  when: not kubeadm_ca.stat.exists
+  apt_repository:
+    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+    filename: 'kubernetes'
+
+- name: Install kubernetes packages
+  when: not kubeadm_ca.stat.exists 
+  apt:
+    name: "{{ pkgs }}"
+    update_cache: true
+    state: present
+  with_items: "{{ pkgs }}"
+
+- name: Disable swap
+  shell: |
+    swapoff -a
